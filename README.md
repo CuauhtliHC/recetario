@@ -1,4 +1,4 @@
-Recetario en Python
+##Recetario en Python
 Este proyecto es un recetario que permite a los usuarios crear, leer, eliminar recetas y categorías. Está hecho en Python y cuenta con las siguientes opciones:
 
 Leer receta: Permite a los usuarios leer una receta existente.
