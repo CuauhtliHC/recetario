@@ -1,4 +1,4 @@
-from os import system, name, listdir, remove, rmdir
+from os import system, name, listdir, remove, rmdir, makedirs
 from pathlib import Path
 
 
@@ -10,6 +10,7 @@ def recetario():
         print("""Elija una de las siguientes opciones:
         [1] Leer receta
         [2] Crear receta
+        [3] Crear categoría
         [4] Eliminar receta
         [5] Eliminar categoría
         [6] Finalizar programa""")
@@ -20,14 +21,13 @@ def recetario():
                 option1()
                 print("La opción 1 le va a preguntar qué categoría elige (carnes, ensaladas, etc.), y una vez que el usuario elija una, le va a preguntar qué receta quiere leer, y mostrar su contenido.")
             case "2":
+                option2()
                 print("En la opción 2 también se le va a hacer elegir una categoría, pero luego le va a pedir que escriba el nombre y el contenido de la nueva receta que quiere crear, y el programa va a crear ese archivo en el lugar correcto")
             case "3":
-                print("La opción 3 le va a preguntar el nombre de la categoría que quiere crear y va a generar una carpeta nueva con ese nombre.")
+                option3()
             case "4":
-                print("La opción 4, hará todo lo mismo que la opción uno, pero en vez de leer la receta, la va a eliminar")
                 option4()
             case "5":
-                print("La opción 5, le va a preguntar qué categoría quiere eliminar")
                 option5()
             case "6":
                 clear()
@@ -59,6 +59,7 @@ def option1():
                     indexReceta = [x.lower() for x in listWhitoutTxt].index(receta.lower())
                     fileReceta = open(Path(rutaReceta, listRecetas[indexReceta]))
                     print(fileReceta.read())
+                    fileReceta.close()
                     input("Desea regresar")
                     validReceta = True
                 else:
@@ -67,10 +68,47 @@ def option1():
             input("La categoria que escogio no se encuentra de enter para escoger nuevamente")
 
 def option2():
-    clear()
+    ruta = Path(Path.cwd(), 'Recetas')
+    listCategory =  sorted(listdir(ruta))
+    stringCategory = ", ".join(listCategory)
+    validCategory = False
+    while not validCategory:
+        clear()
+        category = input(f"Escriba la categoria donde desea crear la receta: {stringCategory}: ")
+        if category.lower() in [x.lower() for x in listCategory]:
+            rutaReceta = Path(ruta, category.lower().capitalize())
+            listRecetas = sorted(listdir(rutaReceta))
+            listWhitoutTxt = [x.replace(".txt", "") for x in listRecetas]
+            validCategory = True
+            validReceta = False
+            while not validReceta:
+                nameReceta = input("Escriba el nombre de la receta: ")                
+                if nameReceta.lower() not in [x.lower() for x in listWhitoutTxt]:
+                    contentReceta = input("Escriba su receta: ")
+                    nameReceta = nameReceta.lower().capitalize() + ".txt"
+                    fileReceta = open(Path(rutaReceta, nameReceta), "w")
+                    fileReceta.write(contentReceta)
+                    validReceta = True
+                    input("Receta creada")
+                else:
+                    input("El nombre de la receta que escogio ya existe")
+        else:
+            input("La categoria que escogio no se encuentra de enter para escoger nuevamente")
 
 def option3():
-    clear()
+    ruta = Path(Path.cwd(), 'Recetas')
+    listCategory =  sorted(listdir(ruta))
+    validCategory = True
+    while validCategory:
+        clear()
+        category = input(f"Escriba el nombre de la categoria que desea crear: ")
+        if category.lower() not in [x.lower() for x in listCategory]:
+            validCategory = False
+            makedirs(Path(ruta, category.lower().capitalize()))
+            input(f"Se a creado la categoria {category.lower().capitalize()}")
+        else:
+            input("Esta categoria ya existe escoja otro nombre")
+
 
 def option4():
     ruta = Path(Path.cwd(), 'Recetas')
