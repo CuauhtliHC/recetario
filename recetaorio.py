@@ -1,12 +1,15 @@
 from os import system, name, listdir, remove, rmdir, makedirs
 from pathlib import Path
 
+ruta = Path(Path.cwd(), 'Recetas')
+listCategory =  sorted(listdir(ruta))
+stringCategory = ", ".join(listCategory)
+listLower = [x.lower() for x in listCategory]
 
 def recetario():
     valid = False
     while not valid:
-        clear()
-        
+        clear()     
         print("""Elija una de las siguientes opciones:
         [1] Leer receta
         [2] Crear receta
@@ -14,7 +17,6 @@ def recetario():
         [4] Eliminar receta
         [5] Eliminar categoría
         [6] Finalizar programa""")
-
         option = input()
         match option:
             case "1":
@@ -32,21 +34,17 @@ def recetario():
             case "6":
                 clear()
                 valid = True
-                print("Usted eligio salir del recetario")
-                
+                print("Usted eligio salir del recetario")      
             case _:
                 print("No existe esta opcion")
 
 
 def option1():
-    ruta = Path(Path.cwd(), 'Recetas')
-    listCategory =  sorted(listdir(ruta))
-    stringCategory = ", ".join(listCategory)
     validCategory = False
     while not validCategory:
         clear()
         category = input(f"Escriba la categoria donde se encuentra la receta que desea leer: {stringCategory}: ")
-        if category.lower() in [x.lower() for x in listCategory]:
+        if category.lower() in listLower:
             rutaReceta = Path(ruta, category.lower().capitalize())
             listRecetas = sorted(listdir(rutaReceta))
             listWhitoutTxt = [x.replace(".txt", "") for x in listRecetas]
@@ -68,14 +66,11 @@ def option1():
             input("La categoria que escogio no se encuentra de enter para escoger nuevamente")
 
 def option2():
-    ruta = Path(Path.cwd(), 'Recetas')
-    listCategory =  sorted(listdir(ruta))
-    stringCategory = ", ".join(listCategory)
     validCategory = False
     while not validCategory:
         clear()
         category = input(f"Escriba la categoria donde desea crear la receta: {stringCategory}: ")
-        if category.lower() in [x.lower() for x in listCategory]:
+        if category.lower() in listLower:
             rutaReceta = Path(ruta, category.lower().capitalize())
             listRecetas = sorted(listdir(rutaReceta))
             listWhitoutTxt = [x.replace(".txt", "") for x in listRecetas]
@@ -96,13 +91,11 @@ def option2():
             input("La categoria que escogio no se encuentra de enter para escoger nuevamente")
 
 def option3():
-    ruta = Path(Path.cwd(), 'Recetas')
-    listCategory =  sorted(listdir(ruta))
     validCategory = True
     while validCategory:
         clear()
         category = input(f"Escriba el nombre de la categoria que desea crear: ")
-        if category.lower() not in [x.lower() for x in listCategory]:
+        if category.lower() not in listLower:
             validCategory = False
             makedirs(Path(ruta, category.lower().capitalize()))
             input(f"Se a creado la categoria {category.lower().capitalize()}")
@@ -111,14 +104,11 @@ def option3():
 
 
 def option4():
-    ruta = Path(Path.cwd(), 'Recetas')
-    listCategory =  sorted(listdir(ruta))
-    stringCategory = ", ".join(listCategory)
     validCategory = False
     while not validCategory:
         clear()
         category = input(f"Escriba la categoria donde se encuentra la receta que desea eliminar {stringCategory}: ")
-        if category.lower() in [x.lower() for x in listCategory]:
+        if category.lower() in listLower:
             rutaReceta = Path(ruta, category.lower().capitalize())
             listRecetas = sorted(listdir(rutaReceta))
             listWhitoutTxt = [x.replace(".txt", "") for x in listRecetas]
@@ -137,16 +127,13 @@ def option4():
         else:
             input("La categoria que escogio no se encuentra de enter para escoger nuevamente")
 
-def option5():    
-    ruta = Path(Path.cwd(), 'Recetas')
-    listCategory =  sorted(listdir(ruta))
-    stringCategory = ", ".join(listCategory)
+def option5():
     validCategory = False
     while not validCategory:
         clear()
         category = input(f"Escriba la categoria que desea eliminar {stringCategory}: ")
-        if category.lower() in [x.lower() for x in listCategory]:
-            indexCategory = [x.lower() for x in listCategory].index(category.lower())
+        if category.lower() in listLower:
+            indexCategory = listLower.index(category.lower())
             print("Borrar directorio")
             rmdir(Path(ruta, listCategory[indexCategory]))
             validCategory = True
@@ -160,6 +147,6 @@ def clear():
     else:
         system('clear')
 clear()
-print(f" Bienvenido las recetas se encuentran en {Path(Path.cwd(), 'Recetas')}")
+print(f"Bienvenido las recetas se encuentran en {ruta}")
 input("De un enter para continuar")
 recetario()
